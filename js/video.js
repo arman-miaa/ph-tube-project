@@ -5,6 +5,13 @@ function getTime(time) {
   return `${hours} Hour ${minutes} Minute ${second} seconds ago`;
 }
 
+const removActiveClass = () => {
+  const buttons = document.getElementsByClassName("category-btn");
+  console.log(buttons);
+  for (let btn of buttons) {
+    btn.classList.remove('active');
+  }
+}
 // 1 - fetch, Load and Show Categories on html
 
 // create load categories
@@ -28,10 +35,41 @@ const loadCategoryVideos = (id) => {
   // alert(id);
    fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
      .then((Response) => Response.json())
-     .then((data) => displayVideos(data.category))
+     .then((data) => {
+       //sobaike active class remove korao
+       removActiveClass();
+
+       // id er class ke active korao
+       const activeBtn = document.getElementById(`btn-${id}`)
+       activeBtn.classList.add('active')
+       console.log(activeBtn);
+       displayVideos(data.category);
+     })
      .catch((err) => console.log(err));
 }
 
+const loadDetails = async (videoId) => {
+  console.log("Video ID:", videoId);
+
+const uri = `https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`;
+  const res = await fetch(uri);
+  const data = await res.json();
+  displayDetails(data.video) 
+}
+
+const displayDetails = (video) => {
+  console.log(video);
+  const detailContainer = document.getElementById("modal-content");
+  detailContainer.innerHTML = `
+<img src="${video.thumbnail}"/>
+<p>${video.description}</p>
+  `;
+  // way -1
+  // document.getElementById("showModalData").click();
+
+  // way  - 2
+  document.getElementById("customModal").showModal();
+}
 // const cardDemo = {
 //   category_id: "1003",
 //   video_id: "aaaf",
@@ -108,7 +146,9 @@ const displayVideos = (videos) => {
     }
     </div>
 
-    <p></p>
+    <p> <button onclick="loadDetails('${
+      video.video_id 
+    }')" class="btn btn-sm btn-error">details</button> </p>
     </div>
   </div>
         `;
@@ -124,7 +164,7 @@ const displayCategories = (categories) => {
     // create a button
     const buttonContainer = document.createElement("div");
     buttonContainer.innerHTML = `
-    <button onclick="loadCategoryVideos(${item.category_id})" class="btn">
+    <button id="btn-${item.category_id}" onclick="loadCategoryVideos(${item.category_id})" class="btn category-btn">
     ${item.category}
     </button>
     `;
