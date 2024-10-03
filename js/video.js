@@ -60,7 +60,7 @@ const displayVideos = (videos) => {
 
     <div class="flex items-center gap-2">
     <p class="text-gray-400">${video.authors[0].profile_name}</p>
-    ${video.authors[0].verified == true ? `<img class="w-5" src="/assets/icons8-verify-48.png" /> `: ''}
+    ${video.authors[0].verified == true ? `<img class="w-5" src="./assets/icons8-verify-48.png" /> `: ''}
     </div>
 
     <p></p>
